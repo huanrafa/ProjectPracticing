@@ -1,3 +1,6 @@
+-- Q 4.1: On average,  how many times searching/trending function is used each session?
+-- Q 4.2: Per user_id, how many times searching/trending function is used each session?
+
 -- Total number of sessions:                                 232974
 -- Number of sessions with 'load_article_search_listing':       419
 -- Number of sessions with 'search_content':                    144

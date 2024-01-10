@@ -1,3 +1,5 @@
+-- Q 3: Calculate the rate of coming back within 3, 7, 28 days (of all devices)
+
 -- NOTE 1: "Coming back" moment is marked as the start of the 2nd session (per user_psuedo_id)
 -- (i.e. period of time being used for comparison is differ_bw_2_first_session = MIN(S.session_started - P.psuedo_started))
 
@@ -34,7 +36,7 @@ interval_flagged AS (
   FROM min_time_session AS S
   INNER JOIN min_time_psuedo AS P
   ON S.user_psuedo_id = P.user_psuedo_id
-  WHERE S.session_started != P.psuedo_started -- Exclude the first session
+  WHERE S.session_started != P.psuedo_started -- Exclude the first session (and those started at the same time as the first session)
   GROUP BY S.user_psuedo_id
 )
 

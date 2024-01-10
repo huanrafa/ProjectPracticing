@@ -1,5 +1,7 @@
 -- In 'android' and 'iOS', can set constraint as "WHERE device LIKE '%iOS%'" OR "WHERE REGEXP_EXTRACT(device, r'"os_name":\s*"(.*?)"') = 'iOS'"
 -- "GROUP BY session_id, date, device" is wrong, as in some cases, 1 session_id does not mean 1 device (e.g. 333be249-c152-4389-b0ac-9e78128b03b7)
+
+-- Q 1: Calculate avg_duration_per_session on each day
 WITH session_info AS (
   SELECT  
     DATE(TIMESTAMP_SECONDS(event_local_timestamp)) AS date,
@@ -19,13 +21,13 @@ os_info AS (
 -- Main
 SELECT  
   date,
-  ROUND(AVG(session_duration), 2) AS avg_duration
+  ROUND(AVG(session_duration), 2) AS avg_duration_per_session
 FROM session_info AS s
 INNER JOIN  os_info AS o
 ON o.session_id = s.session_id
 WHERE s.session_id IS NOT NULL
   AND session_duration != 0
--- Exclude following "ANDs" for avg_duration_all
+-- Exclude the following "AND"s for avg_duration_all
   -- AND os_name = 'Android'
   -- AND os_name = 'iOS'
 GROUP BY date

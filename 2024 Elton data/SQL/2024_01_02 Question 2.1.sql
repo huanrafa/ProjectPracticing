@@ -1,3 +1,4 @@
+-- Q 2.1: Calculate article_per_sess_per_date
 WITH session_article AS (
   SELECT
     DATE(TIMESTAMP_SECONDS(event_local_timestamp)) AS date,
@@ -29,6 +30,8 @@ os_info AS (
 -- ==> avg_article_per_sess_all     = 2.29
 --     avg_article_per_sess_Android = 2.38
 --     avg_article_per_sess_iOS     = 2.23
+-- NOTE: Those numbers are at the moment the code is written. They will change over time.
+
 
 SELECT
   date,
@@ -39,7 +42,7 @@ FROM session_article AS s
 INNER JOIN os_info AS o
 ON o.session_id = s.session_id
 WHERE s.session_id IS NOT NULL
--- Exclude following "ANDs" for all users
+-- Exclude the following "AND"s for avg_duration_all
   -- AND os_name = 'Android'
   -- AND os_name = 'iOS'
 GROUP BY date
