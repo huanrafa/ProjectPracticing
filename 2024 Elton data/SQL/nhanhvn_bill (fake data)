@@ -1,0 +1,69 @@
+WITH dashboard AS (
+  SELECT
+    date,
+    bill_id,
+    type,
+    type_name,
+    mode,
+    mode_name,
+    description,
+
+    products.id AS product_id,
+    products.code,
+    products.name,
+    products.quantity,
+    products.price,
+    products.discount
+
+  FROM `mieu-data-platform.mieu_nhanhvn_dwh.nhanhvn_bill`
+  CROSS JOIN UNNEST(products) AS products
+)
+
+, clone_product AS (
+  SELECT
+    product_id,
+    product_name,
+    CONCAT('Product NHANH.VN ', ROW_NUMBER() OVER (ORDER BY product_id)) AS product_code_clone,
+    (10000+ROW_NUMBER() OVER (ORDER BY product_id)) AS product_id_clone,
+  FROM
+  (
+    SELECT DISTINCT product_id, product_name
+    FROM `mieu-data-platform.mieu_nhanhvn_dwh.nhanhvn_order`
+    CROSS JOIN UNNEST(products) AS products
+  )
+)
+
+, clone_bill AS (
+  SELECT
+    bill_id,
+    (1000000+ROW_NUMBER() OVER (ORDER BY bill_id)) AS bill_id_clone,
+  FROM
+  (
+    SELECT DISTINCT bill_id
+    FROM dashboard 
+  )
+)
+
+SELECT
+  date,
+  bill_id_clone AS bill_id,
+  type,
+  type_name,
+  mode,
+  mode_name,
+  description,
+
+  ARRAY_AGG(STRUCT(
+    product_id_clone AS id,
+    REGEXP_EXTRACT(product_name, r'^(.*?)\s*\(') AS name,
+    product_code_clone AS code,
+    quantity,
+    price*2 AS price,
+    CASE WHEN discount*3 < price*2 THEN discount*3
+        ELSE price*2 END AS discount
+  )) AS products,
+FROM dashboard
+LEFT JOIN clone_product USING(product_id)
+LEFT JOIN clone_bill USING(bill_id)
+WHERE product_id_clone IS NOT NULL
+GROUP BY ALL
