@@ -11,7 +11,7 @@ WITH dashboard AS (
     metrics.interactions,
     metrics.costMicros/1000000 AS cost,
     ROUND(metrics.averageCpm/1000000, 2) AS averageCpm,
-  FROM `doctorcheck-data-warehouse.google_ad_manager_dwh.google_ad_manager_ed955964`
+  FROM `xxx-data-warehouse.google_ad_manager_dwh.google_ad_xxx`
   ORDER BY campaign_startDate DESC, campaign_id
 )
 

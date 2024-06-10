@@ -14,7 +14,7 @@ WITH dashboard AS (
     products.price,
     products.discount
 
-  FROM `mieu-data-platform.mieu_nhanhvn_dwh.nhanhvn_order`
+  FROM `x-data-platform.x_nhanhvn_dwh.nhanhvn_order`
   CROSS JOIN UNNEST(products) AS products
 )
 
@@ -26,7 +26,7 @@ WITH dashboard AS (
   FROM
   (
     SELECT DISTINCT product_id
-    FROM `mieu-data-platform.mieu_nhanhvn_dwh.nhanhvn_order`
+    FROM `x-data-platform.x_nhanhvn_dwh.nhanhvn_order`
     CROSS JOIN UNNEST(products) AS products
   )
 )
